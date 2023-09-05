@@ -294,7 +294,7 @@ public abstract class LibraryManager {
 
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-            connection.setRequestProperty("User-Agent", LibbyProperties.HTTP_USER_AGENT);
+            connection.setRequestProperty("User-Agent", "@HTTP_USER_AGENT@");
 
             try (InputStream in = connection.getInputStream()) {
                 return getURLFromMetadata(in, library);
@@ -401,7 +401,7 @@ public abstract class LibraryManager {
 
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
-            connection.setRequestProperty("User-Agent", LibbyProperties.HTTP_USER_AGENT);
+            connection.setRequestProperty("User-Agent", "@HTTP_USER_AGENT@");
 
             try (InputStream in = connection.getInputStream()) {
                 int len;
