@@ -1,5 +1,6 @@
 ### Version 1.4.0
 * Support data-driven approach to loading
+* Migrate to gradle
 
 ## Begin kyngs/libby fork
 
