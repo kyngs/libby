@@ -1,3 +1,8 @@
+### Version 1.4.0
+* Support data-driven approach to loading
+
+## Begin kyngs/libby fork
+
 ### Version 1.3.0
 * Support for snapshot libraries ([GH-20](https://github.com/AlessioDP/libby/pull/20))
 * Updated jar-relocator ([GH-21](https://github.com/AlessioDP/libby/pull/21))
