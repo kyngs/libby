@@ -12,3 +12,7 @@ dependencies {
 }
 
 description = "libby-paper"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
