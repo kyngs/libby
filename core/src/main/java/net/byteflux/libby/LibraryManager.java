@@ -11,6 +11,7 @@ import net.byteflux.libby.logging.Logger;
 import net.byteflux.libby.logging.adapters.LogAdapter;
 import net.byteflux.libby.relocation.Relocation;
 import net.byteflux.libby.relocation.RelocationHelper;
+import net.byteflux.libby.transitive.TransitiveDependencyHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -87,6 +88,8 @@ public abstract class LibraryManager {
      * Luck's Jar Relocator
      */
     private RelocationHelper relocator;
+
+    private TransitiveDependencyHelper transitiveDependencyHelper;
 
     /**
      * Map of isolated class loaders and theirs id
@@ -578,6 +581,28 @@ public abstract class LibraryManager {
     }
 
     /**
+     * Resolves and loads transitive libraries for a given library. This method ensures that
+     * all libraries on which the provided library depends are properly loaded.
+     *
+     * @param library the primary library for which transitive libraries need to be resolved and loaded.
+     * @throws NullPointerException if the provided library is null.
+     * @see #loadLibrary(Library)
+     */
+    private void resolveTransitiveLibraries(Library library) {
+        requireNonNull(library, "library");
+
+        synchronized (this) {
+            if (transitiveDependencyHelper == null) {
+                transitiveDependencyHelper = new TransitiveDependencyHelper(this, saveDirectory);
+            }
+        }
+
+        for (Library transitiveLibrary : transitiveDependencyHelper.findTransitiveLibraries(library)) {
+            loadLibrary(transitiveLibrary);
+        }
+    }
+
+    /**
      * Loads a library jar into the plugin's classpath. If the library jar
      * doesn't exist locally, it will be downloaded.
      * <p>
@@ -591,6 +616,9 @@ public abstract class LibraryManager {
         Path file = downloadLibrary(requireNonNull(library, "library"));
         if (library.hasRelocations()) {
             file = relocate(file, library.getRelocatedPath(), library.getRelocations());
+        }
+        if (library.resolveTransitiveDependencies()) {
+            resolveTransitiveLibraries(library);
         }
 
         if (library.isIsolatedLoad()) {

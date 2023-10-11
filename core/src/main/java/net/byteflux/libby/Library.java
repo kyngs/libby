@@ -1,6 +1,7 @@
 package net.byteflux.libby;
 
 import net.byteflux.libby.relocation.Relocation;
+import net.byteflux.libby.transitive.ExcludedDependency;
 
 import java.util.Base64;
 import java.util.Collection;
@@ -83,6 +84,16 @@ public class Library {
     private final boolean isolatedLoad;
 
     /**
+     * Should transitive dependencies be resolved for this library?
+     */
+    private final boolean resolveTransitiveDependencies;
+
+    /**
+     * Transitive dependencies that would be excluded on transitive resolvement
+     */
+    private final Collection<ExcludedDependency> excludedTransitiveDependencies;
+
+    /**
      * Creates a new library.
      *
      * @param urls         direct download URLs
@@ -94,6 +105,8 @@ public class Library {
      * @param checksum     binary SHA-256 checksum or null
      * @param relocations  jar relocations or null
      * @param isolatedLoad isolated load for this library
+     * @param resolveTransitiveDependencies transitive dependencies resolvement for this library
+     * @param excludedTransitiveDependencies excluded transitive dependencies or null
      */
     private Library(Collection<String> urls,
                     String id,
@@ -103,9 +116,11 @@ public class Library {
                     String classifier,
                     byte[] checksum,
                     Collection<Relocation> relocations,
-                    boolean isolatedLoad) {
+                    boolean isolatedLoad,
+                    boolean resolveTransitiveDependencies,
+                    Collection<ExcludedDependency> excludedTransitiveDependencies) {
 
-        this(urls, null, id, groupId, artifactId, version, classifier, checksum, relocations, isolatedLoad);
+        this(urls, null, id, groupId, artifactId, version, classifier, checksum, relocations, isolatedLoad, resolveTransitiveDependencies, excludedTransitiveDependencies);
     }
 
     /**
@@ -121,6 +136,8 @@ public class Library {
      * @param checksum     binary SHA-256 checksum or null
      * @param relocations  jar relocations or null
      * @param isolatedLoad isolated load for this library
+     * @param resolveTransitiveDependencies transitive dependencies resolvement for this library
+     * @param excludedTransitiveDependencies excluded transitive dependencies or null
      */
     private Library(Collection<String> urls,
                     Collection<String> repositories,
@@ -131,7 +148,9 @@ public class Library {
                     String classifier,
                     byte[] checksum,
                     Collection<Relocation> relocations,
-                    boolean isolatedLoad) {
+                    boolean isolatedLoad,
+                    boolean resolveTransitiveDependencies,
+                    Collection<ExcludedDependency> excludedTransitiveDependencies) {
 
         this.urls = urls != null ? Collections.unmodifiableList(new LinkedList<>(urls)) : Collections.emptyList();
         this.id = id != null ? id : UUID.randomUUID().toString();
@@ -153,6 +172,8 @@ public class Library {
         this.repositories = repositories != null ? Collections.unmodifiableList(new LinkedList<>(repositories)) : Collections.emptyList();
         relocatedPath = hasRelocations() ? path + "-relocated.jar" : null;
         this.isolatedLoad = isolatedLoad;
+        this.resolveTransitiveDependencies = resolveTransitiveDependencies;
+        this.excludedTransitiveDependencies = excludedTransitiveDependencies != null ? Collections.unmodifiableList(new LinkedList<>(excludedTransitiveDependencies)) : Collections.emptyList();
     }
 
     /**
@@ -309,6 +330,19 @@ public class Library {
     }
 
     /**
+     * Should transitive dependencies of this resolved
+     *
+     * @return true if the transitive dependencies of this library would be resolved
+     */
+    public boolean resolveTransitiveDependencies() {
+        return resolveTransitiveDependencies;
+    }
+
+    public Collection<ExcludedDependency> getExcludedTransitiveDependencies() {
+        return excludedTransitiveDependencies;
+    }
+
+    /**
      * Gets a concise, human-readable string representation of this library.
      *
      * @return string representation
@@ -387,6 +421,16 @@ public class Library {
          * Jar relocations to apply
          */
         private final Collection<Relocation> relocations = new LinkedList<>();
+
+        /**
+         * Resolve transitive dependencies
+         */
+        private boolean resolveTransitiveDependencies;
+
+        /**
+         * Resolve transitive dependencies exclusions
+         */
+        private final Collection<ExcludedDependency> excludedTransitiveDependencies = new LinkedList<>();
 
         /**
          * Adds a direct download URL for this library.
@@ -522,12 +566,48 @@ public class Library {
         }
 
         /**
+         * Sets the transitive dependency resolvement for this library.
+         *
+         * @param resolveTransitiveDependencies the transitive dependency resolvement
+         * @return this builder
+         * @see #excludeTransitiveDependency(ExcludedDependency)
+         */
+        public Builder resolveTransitiveDependencies(boolean resolveTransitiveDependencies) {
+            this.resolveTransitiveDependencies = resolveTransitiveDependencies;
+            return this;
+        }
+
+        /**
+         * Excludes transitive dependency for this library.
+         *
+         * @param excludedDependency Excluded transitive dependency
+         * @return this builder
+         * @see #resolveTransitiveDependencies(boolean)
+         */
+        public Builder excludeTransitiveDependency(ExcludedDependency excludedDependency) {
+            excludedTransitiveDependencies.add(excludedDependency);
+            return this;
+        }
+
+        /**
+         * Excludes transitive dependency for this library.
+         *
+         * @param groupId Excluded transitive dependency group ID
+         * @param artifactId Excluded transitive dependency artifact ID
+         * @return this builder
+         * @see #excludeTransitiveDependency(ExcludedDependency)
+         */
+        public Builder excludeTransitiveDependency(String groupId, String artifactId) {
+            return excludeTransitiveDependency(new ExcludedDependency(groupId, artifactId));
+        }
+
+        /**
          * Creates a new library using this builder's configuration.
          *
          * @return new library
          */
         public Library build() {
-            return new Library(urls, repositories, id, groupId, artifactId, version, classifier, checksum, relocations, isolatedLoad);
+            return new Library(urls, repositories, id, groupId, artifactId, version, classifier, checksum, relocations, isolatedLoad, resolveTransitiveDependencies, excludedTransitiveDependencies);
         }
     }
 }
