@@ -1,3 +1,7 @@
+### Version 1.5.0
+* Add classifier support to the json format
+* Allow to load libraries in parallel
+
 ### Version 1.4.0
 * Support data-driven approach to loading
 * Migrate to gradle

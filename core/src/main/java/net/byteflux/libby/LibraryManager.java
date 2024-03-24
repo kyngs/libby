@@ -641,6 +641,21 @@ public abstract class LibraryManager {
     }
 
     /**
+     * Loads multiple libraries into the plugin's classpath.
+     *
+     * @param libraries the libraries to load
+     * @param parallel Whether to load the libraries in parallel
+     * @see #loadLibrary(Library)
+     */
+    public void loadLibraries(boolean parallel, Library... libraries) {
+        if (parallel) {
+            Arrays.stream(libraries).parallel().forEach(this::loadLibrary);
+        } else {
+            loadLibraries(libraries);
+        }
+    }
+
+    /**
      * Configures the current library manager from a json file.
      * <p>
      * This includes:
@@ -688,7 +703,9 @@ public abstract class LibraryManager {
         // - version: The version of the library
         // Optional properties:
         // - checksum: The SHA-256 checksum of the library, must be a base64 encoded string and may only be included if the library is a JAR.
+        // - classifier: The classifier of the library
         JsonArray libraries = root.getArray("libraries");
+        List<Library> resolvedLibraries = new ArrayList<>();
 
         if (libraries != null) {
             for (int i = 0; i < libraries.size(); i++) {
@@ -724,14 +741,22 @@ public abstract class LibraryManager {
                     libraryBuilder.checksum(checksum);
                 }
 
+                String classifier = library.getString("classifier");
+
+                if (classifier != null) {
+                    libraryBuilder.classifier(classifier);
+                }
+
                 // We will just apply the relocations to all libraries. While it's not the most efficient, it's the easiest to implement
                 for (Relocation relocation : parsedRelocations) {
                     libraryBuilder.relocate(relocation);
                 }
 
-                loadLibrary(libraryBuilder.build());
+                resolvedLibraries.add(libraryBuilder.build());
             }
         }
+
+        loadLibraries(true, resolvedLibraries.toArray(new Library[0]));
     }
 
     /**
