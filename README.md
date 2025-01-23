@@ -1,5 +1,6 @@
-# Libby (AlessioDP)
+# Libby (kyngs)
 
+Fork of [AlessioDP/libby](https://github.com/AlessioDP/libby)
 ## [Changes in this fork](https://github.com/AlessioDP/libby/blob/master/CHANGELOG.md)
 
 # Libby
@@ -9,6 +10,7 @@ server platforms.
 
 Libraries can be downloaded from Maven repositories (or direct URLs) into a plugin's data
 folder, relocated and then loaded into the plugin's classpath at runtime.
+Or you can use automatic gradle integration with [kyngs/libby-gradle-plugin](https://github.com/kyngs/libby-gradle-plugin)
 
 ### Why use runtime dependency management?
 
