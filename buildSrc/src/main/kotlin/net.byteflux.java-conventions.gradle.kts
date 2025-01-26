@@ -47,9 +47,9 @@ publishing {
         maven {
             name = "kyngsRepo"
             url = uri(
-                    "https://repo.kyngs.xyz/" + (if (project.version.toString()
-                                    .contains("SNAPSHOT")
-                    ) "snapshots" else "releases") + "/"
+                "https://repo.kyngs.xyz/" + (if (project.version.toString()
+                        .contains("SNAPSHOT")
+                ) "snapshots" else "releases") + "/"
             )
             credentials(PasswordCredentials::class)
             authentication {
