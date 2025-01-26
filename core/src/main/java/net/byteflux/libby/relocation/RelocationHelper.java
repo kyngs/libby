@@ -50,35 +50,35 @@ public class RelocationHelper {
 
         // ObjectWeb ASM Commons
         classLoader.addPath(libraryManager.downloadLibrary(
-            Library.builder()
-                   .groupId("org.ow2.asm")
-                   .artifactId("asm-commons")
-                   .version("9.2")
-                   .checksum("vkzlMTiiOLtSLNeBz5Hzulzi9sqT7GLUahYqEnIl4KY=")
-                   .repository(Repositories.MAVEN_CENTRAL)
-                   .build()
+                Library.builder()
+                        .groupId("org.ow2.asm")
+                        .artifactId("asm-commons")
+                        .version("9.7.1")
+                        .hexChecksum("9a579b54d292ad9be171d4313fd4739c635592c2b5ac3a459bbd1049cddec6a0")
+                        .repository(Repositories.MAVEN_CENTRAL)
+                        .build()
         ));
 
         // ObjectWeb ASM
         classLoader.addPath(libraryManager.downloadLibrary(
-            Library.builder()
-                   .groupId("org.ow2.asm")
-                   .artifactId("asm")
-                   .version("9.2")
-                   .checksum("udT+TXGTjfOIOfDspCqqpkz4sxPWeNoDbwyzyhmbR/U=")
-                   .repository(Repositories.MAVEN_CENTRAL)
-                   .build()
+                Library.builder()
+                        .groupId("org.ow2.asm")
+                        .artifactId("asm")
+                        .version("9.7.1")
+                        .hexChecksum("8cadd43ac5eb6d09de05faecca38b917a040bb9139c7edeb4cc81c740b713281")
+                        .repository(Repositories.MAVEN_CENTRAL)
+                        .build()
         ));
 
         // Luck's Jar Relocator
         classLoader.addPath(libraryManager.downloadLibrary(
-            Library.builder()
-                   .groupId("me.lucko")
-                   .artifactId("jar-relocator")
-                   .version("1.7")
-                   .checksum("b30RhOF6kHiHl+O5suNLh/+eAr1iOFEFLXhwkHHDu4I=")
-                   .repository(Repositories.MAVEN_CENTRAL)
-                   .build()
+                Library.builder()
+                        .groupId("me.lucko")
+                        .artifactId("jar-relocator")
+                        .version("1.7")
+                        .checksum("b30RhOF6kHiHl+O5suNLh/+eAr1iOFEFLXhwkHHDu4I=")
+                        .repository(Repositories.MAVEN_CENTRAL)
+                        .build()
         ));
 
         try {
@@ -115,10 +115,10 @@ public class RelocationHelper {
             List<Object> rules = new LinkedList<>();
             for (Relocation relocation : relocations) {
                 rules.add(relocationConstructor.newInstance(
-                    relocation.getPattern(),
-                    relocation.getRelocatedPattern(),
-                    relocation.getIncludes(),
-                    relocation.getExcludes()
+                        relocation.getPattern(),
+                        relocation.getRelocatedPattern(),
+                        relocation.getIncludes(),
+                        relocation.getExcludes()
                 ));
             }
 

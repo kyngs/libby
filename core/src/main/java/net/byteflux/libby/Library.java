@@ -2,6 +2,7 @@ package net.byteflux.libby;
 
 import net.byteflux.libby.relocation.Relocation;
 import net.byteflux.libby.transitive.ExcludedDependency;
+import net.byteflux.libby.util.Util;
 
 import java.util.Base64;
 import java.util.Collection;
@@ -530,6 +531,16 @@ public class Library {
          */
         public Builder checksum(String checksum) {
             return checksum(Base64.getDecoder().decode(requireNonNull(checksum, "checksum")));
+        }
+        
+        /**
+         * Sets the hexadecimal SHA-256 checksum for this library.
+         *
+         * @param checksum hexadecimal SHA-256 checksum
+         * @return this builder
+         */
+        public Builder hexChecksum(String checksum) {
+            return checksum(Util.hexStringToByteArray(checksum));
         }
 
         /**

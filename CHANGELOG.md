@@ -1,3 +1,7 @@
+### Version 1.6.0
+* Support Java 23
+* Allow to set checksum in hex format
+
 ### Version 1.5.0
 * Add classifier support to the json format
 * Allow to load libraries in parallel

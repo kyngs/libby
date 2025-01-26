@@ -10,7 +10,8 @@ server platforms.
 
 Libraries can be downloaded from Maven repositories (or direct URLs) into a plugin's data
 folder, relocated and then loaded into the plugin's classpath at runtime.
-Or you can use automatic gradle integration with [kyngs/libby-gradle-plugin](https://github.com/kyngs/libby-gradle-plugin)
+
+Or you can use the automatic gradle integration with [kyngs/libby-gradle-plugin](https://github.com/kyngs/libby-gradle-plugin)
 
 ### Why use runtime dependency management?
 
@@ -26,35 +27,18 @@ who self-host their plugins on servers with limited bandwidth.
 
 ### Usage
 
-Firstly, add the maven artifact to your `pom.xml`
-```xml
-<!-- Libby (AlessioDP) Repository -->
-<repository>
-  <id>AlessioDP</id>
-  <url>https://repo.alessiodp.com/releases/</url>
-</repository>
+Firstly, add the maven artifact, here's an example for gradle:
+```kts
+// Firstly add my repo
+maven { url = uri("https://repo.kyngs.xyz/public/") }
 
-<dependency>
-    <groupId>net.byteflux</groupId>
-    <artifactId>libby-bukkit</artifactId> <!-- Replace bukkit if you're using another platform -->
-    <version>1.3.0</version>
-</dependency>
+// then add the dependency
+implementation("xyz.kyngs.libby:libby-bukkit:1.5.0") // Replace bukkit with the platform you are using
 ```
 
 Remember to **always** relocate Libby to avoid conflicts
-```xml
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-shade-plugin</artifactId>
-    <configuration>
-        <relocations>
-            <relocation>
-                <pattern>net.byteflux.libby</pattern>
-                <shadedPattern>yourPackage.libs.net.byteflux.libby</shadedPattern>
-            </relocation>
-        </relocations>
-    </configuration>
-</plugin>
+```kts
+relocate("net.byteflux.libby", "your.package.lib.libby")
 ```
 
 Then, create a new LibraryManager instance
@@ -65,7 +49,7 @@ BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(plugin);
 // Create a library manager for a Bungee plugin
 BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(plugin);
 
-// Also Nukkit, Sponge, and Velocity are supported
+// Also Nukkit, Sponge, Paper, and Velocity are supported
 ```
 
 Create a Library instance with the library builder
