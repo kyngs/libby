@@ -613,6 +613,26 @@ public abstract class LibraryManager {
      * @see #downloadLibrary(Library)
      */
     public void loadLibrary(Library library) {
+        Path file = preLoadLibrary(library);
+
+        if (library.isIsolatedLoad()) {
+            addToIsolatedClasspath(library, file);
+        } else {
+            addToClasspath(file);
+        }
+    }
+
+    /**
+     * Returns a library jar that can then be loaded into the plugin's classpath. If the library jar
+     * doesn't exist locally, it will be downloaded.
+     * <p>
+     * If the provided library has any relocations, they will be applied to
+     * create a relocated jar and the relocated jar will be returned instead.
+     *
+     * @param library the library to load
+     * @see #downloadLibrary(Library)
+     */
+    public Path preLoadLibrary(Library library) {
         Path file = downloadLibrary(requireNonNull(library, "library"));
         if (library.hasRelocations()) {
             file = relocate(file, library.getRelocatedPath(), library.getRelocations());
@@ -620,12 +640,7 @@ public abstract class LibraryManager {
         if (library.resolveTransitiveDependencies()) {
             resolveTransitiveLibraries(library);
         }
-
-        if (library.isIsolatedLoad()) {
-            addToIsolatedClasspath(library, file);
-        } else {
-            addToClasspath(file);
-        }
+        return file;
     }
 
     /**

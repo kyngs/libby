@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,6 +21,7 @@ public class PaperLibraryManager extends LibraryManager {
      * Plugin classpath helper
      */
     private final URLClassLoaderHelper classLoader;
+    private final URLClassLoaderHelper globalClassLoader;
 
     private final Plugin plugin;
 
@@ -74,11 +76,12 @@ public class PaperLibraryManager extends LibraryManager {
         }
 
         classLoader = new URLClassLoaderHelper(libraryLoader, this);
+        globalClassLoader = new URLClassLoaderHelper((URLClassLoader) cl, this);
         this.plugin = plugin;
     }
 
     /**
-     * Adds a file to the Paper plugin's classpath.
+     * Adds a file to the Paper plugin's library classpath.
      *
      * @param file the file to add
      */
@@ -87,6 +90,20 @@ public class PaperLibraryManager extends LibraryManager {
         classLoader.addToClasspath(file);
     }
 
+    /**
+     * Loads a library jar into the global classpath. If the library jar
+     * doesn't exist locally, it will be downloaded.
+     * <p>
+     * If the provided library has any relocations, they will be applied to
+     * create a relocated jar and the relocated jar will be loaded instead.
+     *
+     * @param library the library to load
+     * @see #downloadLibrary(Library)
+     */
+    public void loadGlobalLibrary(Library library) {
+        globalClassLoader.addToClasspath(preLoadLibrary(library));
+    }
+    
     @Override
     protected InputStream getPluginResourceAsInputStream(String path) throws UnsupportedOperationException {
         return plugin.getResource(path);

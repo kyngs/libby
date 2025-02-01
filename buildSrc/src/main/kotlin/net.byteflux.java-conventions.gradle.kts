@@ -35,7 +35,7 @@ repositories {
 }
 
 group = "xyz.kyngs.libby"
-version = "1.6.0"
+version = "1.7.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

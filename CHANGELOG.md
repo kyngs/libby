@@ -1,3 +1,6 @@
+### Version 1.7.0
+* Allow to load libraries into the global classpath on Paper
+
 ### Version 1.6.0
 * Support Java 23
 * Allow to set checksum in hex format
