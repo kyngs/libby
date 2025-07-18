@@ -49,7 +49,7 @@ BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(plugin);
 // Create a library manager for a Bungee plugin
 BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(plugin);
 
-// Also Nukkit, Sponge, Paper, and Velocity are supported
+// Also Nukkit, Sponge, Paper, Velocity and Fabric are supported
 ```
 
 Create a Library instance with the library builder
