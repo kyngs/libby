@@ -1,12 +1,6 @@
-# Libby (kyngs)
-
-Fork of [AlessioDP/libby](https://github.com/AlessioDP/libby)
-## [Changes in this fork](https://github.com/AlessioDP/libby/blob/master/CHANGELOG.md)
-
 # Libby
 
-A runtime dependency management library for plugins running in Java-based Minecraft
-server platforms.
+A runtime dependency management library for Java projects, primarily designed for Java-based Minecraft server plugins.
 
 Libraries can be downloaded from Maven repositories (or direct URLs) into a plugin's data
 folder, relocated and then loaded into the plugin's classpath at runtime.
@@ -25,6 +19,18 @@ plugin jar.
 A smaller plugin jar also means shorter download times and less network strain for authors
 who self-host their plugins on servers with limited bandwidth.
 
+### Maven Central and other public repositories note
+
+Libby downloads dependencies directly from remote repositories at runtime, on every server that
+runs your plugin. When you point it at Maven Central (or other public repositories such as Sonatype),
+you are effectively using them as a CDN to serve your dependencies to end users. This is explicitly
+something these repositories do not want: their infrastructure is meant for building projects, not for
+distributing artifacts at scale to production servers.
+
+To avoid putting this load on public repositories, it is strongly recommended that you host your own
+mirror of the repositories you depend on and configure Libby to download from it instead. This keeps
+the traffic on infrastructure you control, and protects you from upstream availability or rate-limiting issues.
+
 ### Usage
 
 Firstly, add the maven artifact, here's an example for gradle:
@@ -33,7 +39,7 @@ Firstly, add the maven artifact, here's an example for gradle:
 maven { url = uri("https://repo.kyngs.xyz/public/") }
 
 // then add the dependency
-implementation("xyz.kyngs.libby:libby-bukkit:1.5.0") // Replace bukkit with the platform you are using
+implementation("xyz.kyngs.libby:libby-paper:2.0.0-SNAPSHOT") // Replace paper with the platform you are using
 ```
 
 Remember to **always** relocate Libby to avoid conflicts
@@ -43,13 +49,11 @@ relocate("net.byteflux.libby", "your.package.lib.libby")
 
 Then, create a new LibraryManager instance
 ```java
-// Create a library manager for a Bukkit/Spigot plugin
-BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(plugin);
+// Create a library manager for a Paper plugin
+PaperLibraryManager bukkitLibraryManager = new PaperLibraryManager(plugin);
 
 // Create a library manager for a Bungee plugin
 BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(plugin);
-
-// Also Nukkit, Sponge, Paper, and Velocity are supported
 ```
 
 Create a Library in[build.gradle.kts](../LibrePremium/Plugin/build.gradle.kts)stance with the library builder
@@ -81,7 +85,7 @@ libraryManager.loadLibrary(lib);
 <details><summary>Complete code</summary>
 
 ```java
-BukkitLibraryManager libraryManager = new BukkitLibraryManager(plugin);
+PaperLibraryManager libraryManager = new PaperLibraryManager(plugin);
 
 Library lib = Library.builder()
     .groupId("your{}dependency{}groupId") // "{}" is replaced with ".", useful to avoid unwanted changes made by maven-shade-plugin
@@ -109,9 +113,4 @@ libraryManager.loadLibrary(lib);
 
 Special thanks to:
 
-* [Luck](https://github.com/lucko) for [LuckPerms](https://github.com/lucko/LuckPerms)
-  and its dependency management system which was the original inspiration for this project
-  and another thanks for [jar-relocator](https://github.com/lucko/jar-relocator) which is
-  used by Libby to perform jar relocations.
-* [Glare](https://github.com/darbyjack) for convincing me (Byteflux) that I should publish this
-  library instead of letting it sit around collecting dust :)
+* [AlessioDP](https://github.com/AlessioDP/libby) and [Byteflux](https://github.com/Byteflux/libby) for creating the base of this library
