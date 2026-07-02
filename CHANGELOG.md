@@ -1,5 +1,6 @@
 ### Version 2.0.0
-
+- Rebrand packages to xyz.kyngs.libby
+- Bump minimum supported Java version to 21
 
 ### Version 1.7.0
 * Allow to load libraries into the global classpath on Paper

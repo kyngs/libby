@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id("net.byteflux.java-conventions")
+    id("xyz.kyngs.libby.java-conventions")
 }
 
 dependencies {
@@ -12,7 +12,3 @@ dependencies {
 }
 
 description = "libby-paper"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}

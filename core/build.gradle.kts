@@ -1,6 +1,5 @@
 plugins {
-    id("net.byteflux.java-conventions")
-    id("net.kyori.blossom").version("1.3.1")
+    id("xyz.kyngs.libby.java-conventions")
 }
 
 dependencies {
@@ -10,9 +9,9 @@ dependencies {
     compileOnly("org.apache.maven:maven-resolver-provider:3.9.4")
 }
 
-blossom {
-    replaceToken("@VERSION@", project.version.toString())
-    replaceToken("@HTTP_USER_AGENT@", "libby/" + project.version.toString())
-}
+//blossom {
+//    replaceToken("@VERSION@", project.version.toString())
+//    replaceToken("@HTTP_USER_AGENT@", "libby/" + project.version.toString())
+//}
 
 description = "libby-core"

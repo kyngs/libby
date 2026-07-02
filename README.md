@@ -44,7 +44,7 @@ implementation("xyz.kyngs.libby:libby-paper:2.0.0-SNAPSHOT") // Replace paper wi
 
 Remember to **always** relocate Libby to avoid conflicts
 ```kts
-relocate("net.byteflux.libby", "your.package.lib.libby")
+relocate("xyz.kyngs.libby", "your.package.lib.libby")
 ```
 
 Then, create a new LibraryManager instance

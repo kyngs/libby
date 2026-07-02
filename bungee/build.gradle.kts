@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id("net.byteflux.java-conventions")
+    id("xyz.kyngs.libby.java-conventions")
 }
 
 dependencies {
